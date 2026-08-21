@@ -15,15 +15,24 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    In the same dialog, set the **Project language level** field to the `SDK default` option.
 1. After that, locate the `src/main/java/HermesMini.java` file, right-click it, and choose `Run HermesMini.main()` (if the code editor is showing compile errors, try restarting the IDE). If the setup is correct, you should see something like the below as the output:
    ```
-    _                                                   _       _
-   | |__   ___ _ __ _ __ ___   ___  ___       _ __ ___ (_)_ __ (_)
-   | '_ \ / _ \ '__| '_ ` _ \ / _ \/ __|_____| '_ ` _ \| | '_ \| |
-   | | | |  __/ |  | | | | | |  __/\__ \_____| | | | | | | | | | |
-   |_| |_|\___|_|  |_| |_| |_|\___||___/     |_| |_| |_|_|_| |_|_|
+       ____________________________________________________________
+         _                                                   _       _
+        | |__   ___ _ __ _ __ ___   ___  ___       _ __ ___ (_)_ __ (_)
+        | '_ \ / _ \ '__| '_ ` _ \ / _ \/ __|_____| '_ ` _ \| | '_ \| |
+        | | | |  __/ |  | | | | | |  __/\__ \_____| | | | | | | | | | |
+        |_| |_|\___|_|  |_| |_| |_|\___||___/     |_| |_| |_|_|_| |_|_|
 
-   Hello! I'm hermes-mini
-   What can I do for you?
-   Bye. Hope to see you again soon!
+        Hello! I'm hermes-mini
+        What can I do for you?
+       ____________________________________________________________
+   list
+       ____________________________________________________________
+        list
+       ____________________________________________________________
+   bye
+       ____________________________________________________________
+        Bye. Hope to see you again soon!
+       ____________________________________________________________
    ```
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
