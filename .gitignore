@@ -13,6 +13,9 @@ src/main/resources/docs/
 *.iml
 bin/
 
+# Compiled Java classes
+*.class
+
 # Temp files
 _temp/
 
