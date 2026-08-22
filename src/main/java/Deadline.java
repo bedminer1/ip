@@ -6,7 +6,7 @@ public class Deadline extends Task {
 
     /** Creates a deadline task. */
     public Deadline(String description, String by) {
-        super(description);
+        super(description, TaskType.DEADLINE);
         this.by = by;
     }
 

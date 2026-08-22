@@ -3,6 +3,6 @@ public class Todo extends Task {
 
     /** Creates a not-done todo task. */
     public Todo(String description) {
-        super(description);
+        super(description, TaskType.TODO);
     }
 }
