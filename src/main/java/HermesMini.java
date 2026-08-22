@@ -48,26 +48,41 @@ public class HermesMini {
             if (command.equals("list")) {
                 printTaskList(tasks, taskCount);
             } else if (command.startsWith("mark ")) {
-                int taskNumber = Integer.parseInt(command.substring(5));
-                Task task = tasks[taskNumber - 1];
-                task.markAsDone();
-                printMarkedTask(task);
+                markTask(tasks, taskCount, command.substring(5), true);
             } else if (command.startsWith("unmark ")) {
-                int taskNumber = Integer.parseInt(command.substring(7));
-                Task task = tasks[taskNumber - 1];
-                task.markAsNotDone();
-                printUnmarkedTask(task);
-            } else if (command.startsWith("todo ")) {
-                addTask(tasks, taskCount++, new Todo(command.substring(5)));
+                markTask(tasks, taskCount, command.substring(7), false);
+            } else if (command.equals("todo") || command.startsWith("todo ")) {
+                String description = command.length() == 4 ? ""
+                        : command.substring(5).trim();
+                if (description.isEmpty()) {
+                    printError("A todo needs a description.");
+                } else {
+                    taskCount = addTask(tasks, taskCount, new Todo(description));
+                }
             } else if (command.startsWith("deadline ")) {
                 String[] parts = command.substring(9).split(" /by ", 2);
-                addTask(tasks, taskCount++, new Deadline(parts[0], parts[1]));
+                if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+                    printError("A deadline needs a description and a /by date or time.");
+                } else {
+                    taskCount = addTask(tasks, taskCount,
+                            new Deadline(parts[0].trim(), parts[1].trim()));
+                }
             } else if (command.startsWith("event ")) {
                 String[] parts = command.substring(6).split(" /from ", 2);
-                String[] end = parts[1].split(" /to ", 2);
-                addTask(tasks, taskCount++, new Event(parts[0], end[0], end[1]));
+                if (parts.length < 2) {
+                    printError("An event needs a description, /from time, and /to time.");
+                } else {
+                    String[] end = parts[1].split(" /to ", 2);
+                    if (end.length < 2 || parts[0].trim().isEmpty()
+                            || end[0].trim().isEmpty() || end[1].trim().isEmpty()) {
+                        printError("An event needs a description, /from time, and /to time.");
+                    } else {
+                        taskCount = addTask(tasks, taskCount,
+                                new Event(parts[0].trim(), end[0].trim(), end[1].trim()));
+                    }
+                }
             } else {
-                addTask(tasks, taskCount++, new Todo(command));
+                printError("I don't recognise that command. Try todo, deadline, event, list, mark, or unmark.");
             }
         }
         scanner.close();
@@ -116,8 +131,40 @@ public class HermesMini {
         System.out.println(DIVIDER);
     }
 
+    /** Marks or unmarks a task after validating the user-provided number. */
+    private static void markTask(Task[] tasks, int count, String numberText, boolean done) {
+        try {
+            int number = Integer.parseInt(numberText.trim());
+            if (number < 1 || number > count) {
+                printError("That task number is not in your list.");
+                return;
+            }
+            Task task = tasks[number - 1];
+            if (done) {
+                task.markAsDone();
+                printMarkedTask(task);
+            } else {
+                task.markAsNotDone();
+                printUnmarkedTask(task);
+            }
+        } catch (NumberFormatException exception) {
+            printError("Please provide a valid task number.");
+        }
+    }
+
+    /** Prints a framed error without terminating the chatbot. */
+    private static void printError(String message) {
+        System.out.println(DIVIDER);
+        System.out.println(INDENT + "OOPS!!! " + message);
+        System.out.println(DIVIDER);
+    }
+
     /** Stores and reports a newly created task. */
-    private static void addTask(Task[] tasks, int index, Task task) {
+    private static int addTask(Task[] tasks, int index, Task task) {
+        if (index >= MAX_TASKS) {
+            printError("Your task list is full.");
+            return index;
+        }
         tasks[index] = task;
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Got it. I've added this task:");
@@ -127,5 +174,6 @@ public class HermesMini {
         System.out.println(INDENT + "Now you have " + (index + 1)
                 + " tasks in the list.");
         System.out.println(DIVIDER);
+        return index + 1;
     }
 }
