@@ -36,6 +36,7 @@ public class HermesMini {
         printGreeting();
 
         String[] tasks = new String[MAX_TASKS];
+        boolean[] completed = new boolean[MAX_TASKS];
         int taskCount = 0;
 
         Scanner scanner = new Scanner(System.in);
@@ -46,7 +47,11 @@ public class HermesMini {
                 break;
             }
             if (command.equals("list")) {
-                printTaskList(tasks, taskCount);
+                printTaskList(tasks, completed, taskCount);
+            } else if (command.startsWith("mark ")) {
+                int taskNumber = Integer.parseInt(command.substring(5));
+                completed[taskNumber - 1] = true;
+                printMarkedTask(tasks[taskNumber - 1]);
             } else {
                 tasks[taskCount++] = command;
                 printMessage("added: " + command);
@@ -71,12 +76,22 @@ public class HermesMini {
         System.out.println(DIVIDER);
     }
 
-    /** Prints the stored tasks, one per line, prefixed with a 1-based index. */
-    private static void printTaskList(String[] tasks, int count) {
+    /** Prints the stored tasks and their completion status. */
+    private static void printTaskList(String[] tasks, boolean[] completed, int count) {
         System.out.println(DIVIDER);
+        System.out.println(INDENT + "Here are the tasks in your list:");
         for (int i = 0; i < count; i++) {
-            System.out.println(INDENT + (i + 1) + ". " + tasks[i]);
+            String marker = completed[i] ? "[X]" : "[ ]";
+            System.out.println(INDENT + (i + 1) + "." + marker + " " + tasks[i]);
         }
+        System.out.println(DIVIDER);
+    }
+
+    /** Prints the confirmation shown after marking a task as done. */
+    private static void printMarkedTask(String task) {
+        System.out.println(DIVIDER);
+        System.out.println(INDENT + "Nice! I've marked this task as done:");
+        System.out.println(INDENT + "  [X] " + task);
         System.out.println(DIVIDER);
     }
 }
