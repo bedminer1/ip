@@ -32,4 +32,14 @@ public class Task {
     public String getDescription() {
         return description;
     }
+
+    /** Returns the one-letter icon identifying this task type. */
+    public String getTypeIcon() {
+        return "T";
+    }
+
+    /** Returns the task description together with any date/time details. */
+    public String getDisplayText() {
+        return description;
+    }
 }

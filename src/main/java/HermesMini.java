@@ -57,9 +57,17 @@ public class HermesMini {
                 Task task = tasks[taskNumber - 1];
                 task.markAsNotDone();
                 printUnmarkedTask(task);
+            } else if (command.startsWith("todo ")) {
+                addTask(tasks, taskCount++, new Todo(command.substring(5)));
+            } else if (command.startsWith("deadline ")) {
+                String[] parts = command.substring(9).split(" /by ", 2);
+                addTask(tasks, taskCount++, new Deadline(parts[0], parts[1]));
+            } else if (command.startsWith("event ")) {
+                String[] parts = command.substring(6).split(" /from ", 2);
+                String[] end = parts[1].split(" /to ", 2);
+                addTask(tasks, taskCount++, new Event(parts[0], end[0], end[1]));
             } else {
-                tasks[taskCount++] = new Task(command);
-                printMessage("added: " + command);
+                addTask(tasks, taskCount++, new Todo(command));
             }
         }
         scanner.close();
@@ -86,8 +94,8 @@ public class HermesMini {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Here are the tasks in your list:");
         for (int i = 0; i < count; i++) {
-            System.out.println(INDENT + (i + 1) + ".[" + tasks[i].getStatusIcon()
-                    + "] " + tasks[i].getDescription());
+            System.out.println(INDENT + (i + 1) + ".[" + tasks[i].getTypeIcon() + "]["
+                    + tasks[i].getStatusIcon() + "] " + tasks[i].getDisplayText());
         }
         System.out.println(DIVIDER);
     }
@@ -105,6 +113,19 @@ public class HermesMini {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "OK, I've marked this task as not done yet:");
         System.out.println(INDENT + "  [ ] " + task.getDescription());
+        System.out.println(DIVIDER);
+    }
+
+    /** Stores and reports a newly created task. */
+    private static void addTask(Task[] tasks, int index, Task task) {
+        tasks[index] = task;
+        System.out.println(DIVIDER);
+        System.out.println(INDENT + "Got it. I've added this task:");
+        System.out.println(INDENT + "  [" + task.getTypeIcon() + "][ ] "
+                + task.getDisplayText());
+        System.out.println();
+        System.out.println(INDENT + "Now you have " + (index + 1)
+                + " tasks in the list.");
         System.out.println(DIVIDER);
     }
 }
