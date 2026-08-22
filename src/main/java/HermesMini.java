@@ -3,9 +3,9 @@ import java.util.Scanner;
 /**
  * HermesMini is a command-line chatbot that keeps track of the user's tasks.
  *
- * <p>This is the application entry point. It greets the user, then echoes each
- * command entered until the user types {@code bye}, which prints a farewell and
- * exits. Task-management commands arrive in later levels of the project.
+ * <p>This is the application entry point. It greets the user, stores each
+ * command entered, and lists the stored tasks on request, until the user types
+ * {@code bye}, which prints a farewell and exits.
  */
 public class HermesMini {
 
@@ -24,13 +24,19 @@ public class HermesMini {
     /** Horizontal rule that frames each chatbot message. */
     private static final String DIVIDER = "    ____________________________________________________________";
 
+    /** Maximum number of tasks the list can hold (spec assumes at most 100). */
+    private static final int MAX_TASKS = 100;
+
     /**
-     * Greets the user, then echoes each command until {@code bye} is entered.
+     * Greets the user, then stores and lists tasks until {@code bye} is entered.
      *
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args) {
         printGreeting();
+
+        String[] tasks = new String[MAX_TASKS];
+        int taskCount = 0;
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -39,7 +45,12 @@ public class HermesMini {
                 printMessage("Bye. Hope to see you again soon!");
                 break;
             }
-            printMessage(command);
+            if (command.equals("list")) {
+                printTaskList(tasks, taskCount);
+            } else {
+                tasks[taskCount++] = command;
+                printMessage("added: " + command);
+            }
         }
         scanner.close();
     }
@@ -57,6 +68,15 @@ public class HermesMini {
     private static void printMessage(String message) {
         System.out.println(DIVIDER);
         System.out.println(INDENT + message);
+        System.out.println(DIVIDER);
+    }
+
+    /** Prints the stored tasks, one per line, prefixed with a 1-based index. */
+    private static void printTaskList(String[] tasks, int count) {
+        System.out.println(DIVIDER);
+        for (int i = 0; i < count; i++) {
+            System.out.println(INDENT + (i + 1) + ". " + tasks[i]);
+        }
         System.out.println(DIVIDER);
     }
 }
