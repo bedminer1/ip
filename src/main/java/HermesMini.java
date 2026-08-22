@@ -35,8 +35,7 @@ public class HermesMini {
     public static void main(String[] args) {
         printGreeting();
 
-        String[] tasks = new String[MAX_TASKS];
-        boolean[] completed = new boolean[MAX_TASKS];
+        Task[] tasks = new Task[MAX_TASKS];
         int taskCount = 0;
 
         Scanner scanner = new Scanner(System.in);
@@ -47,17 +46,19 @@ public class HermesMini {
                 break;
             }
             if (command.equals("list")) {
-                printTaskList(tasks, completed, taskCount);
+                printTaskList(tasks, taskCount);
             } else if (command.startsWith("mark ")) {
                 int taskNumber = Integer.parseInt(command.substring(5));
-                completed[taskNumber - 1] = true;
-                printMarkedTask(tasks[taskNumber - 1]);
+                Task task = tasks[taskNumber - 1];
+                task.markAsDone();
+                printMarkedTask(task);
             } else if (command.startsWith("unmark ")) {
                 int taskNumber = Integer.parseInt(command.substring(7));
-                completed[taskNumber - 1] = false;
-                printUnmarkedTask(tasks[taskNumber - 1]);
+                Task task = tasks[taskNumber - 1];
+                task.markAsNotDone();
+                printUnmarkedTask(task);
             } else {
-                tasks[taskCount++] = command;
+                tasks[taskCount++] = new Task(command);
                 printMessage("added: " + command);
             }
         }
@@ -81,29 +82,29 @@ public class HermesMini {
     }
 
     /** Prints the stored tasks and their completion status. */
-    private static void printTaskList(String[] tasks, boolean[] completed, int count) {
+    private static void printTaskList(Task[] tasks, int count) {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Here are the tasks in your list:");
         for (int i = 0; i < count; i++) {
-            String marker = completed[i] ? "[X]" : "[ ]";
-            System.out.println(INDENT + (i + 1) + "." + marker + " " + tasks[i]);
+            System.out.println(INDENT + (i + 1) + ".[" + tasks[i].getStatusIcon()
+                    + "] " + tasks[i].getDescription());
         }
         System.out.println(DIVIDER);
     }
 
     /** Prints the confirmation shown after marking a task as done. */
-    private static void printMarkedTask(String task) {
+    private static void printMarkedTask(Task task) {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Nice! I've marked this task as done:");
-        System.out.println(INDENT + "  [X] " + task);
+        System.out.println(INDENT + "  [X] " + task.getDescription());
         System.out.println(DIVIDER);
     }
 
     /** Prints the confirmation shown after marking a task as not done. */
-    private static void printUnmarkedTask(String task) {
+    private static void printUnmarkedTask(Task task) {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "OK, I've marked this task as not done yet:");
-        System.out.println(INDENT + "  [ ] " + task);
+        System.out.println(INDENT + "  [ ] " + task.getDescription());
         System.out.println(DIVIDER);
     }
 }
