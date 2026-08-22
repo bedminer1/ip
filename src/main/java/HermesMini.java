@@ -52,6 +52,10 @@ public class HermesMini {
                 int taskNumber = Integer.parseInt(command.substring(5));
                 completed[taskNumber - 1] = true;
                 printMarkedTask(tasks[taskNumber - 1]);
+            } else if (command.startsWith("unmark ")) {
+                int taskNumber = Integer.parseInt(command.substring(7));
+                completed[taskNumber - 1] = false;
+                printUnmarkedTask(tasks[taskNumber - 1]);
             } else {
                 tasks[taskCount++] = command;
                 printMessage("added: " + command);
@@ -92,6 +96,14 @@ public class HermesMini {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Nice! I've marked this task as done:");
         System.out.println(INDENT + "  [X] " + task);
+        System.out.println(DIVIDER);
+    }
+
+    /** Prints the confirmation shown after marking a task as not done. */
+    private static void printUnmarkedTask(String task) {
+        System.out.println(DIVIDER);
+        System.out.println(INDENT + "OK, I've marked this task as not done yet:");
+        System.out.println(INDENT + "  [ ] " + task);
         System.out.println(DIVIDER);
     }
 }
