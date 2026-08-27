@@ -1,5 +1,10 @@
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /** Represents a task and whether it has been completed. */
 public class Task {
+	/** Relative PATH to save data */
+	private static final Path DATA_FILE = Paths.get("data", "hermes.txt");
 
     /** The text describing this task. */
     private final String description;
@@ -50,5 +55,20 @@ public class Task {
     /** Returns the task description together with any date/time details. */
     public String getDisplayText() {
         return description;
+    }
+
+    /** Returns the relative path used for persistent task storage. */
+    public static Path getDataFile() {
+        return DATA_FILE;
+    }
+
+    /** Returns the completion flag in the file format. */
+    public String getSaveStatus() {
+        return isDone ? "1" : "0";
+    }
+
+    /** Returns this task in the format used by the save file. */
+    public String toSaveString() {
+        return getTypeIcon() + " | " + getSaveStatus() + " | " + description;
     }
 }

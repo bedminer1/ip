@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 /**
  * HermesMini is a command-line chatbot that keeps track of the user's tasks.
@@ -29,6 +32,8 @@ public class HermesMini {
     /** Maximum number of tasks the list can hold (spec assumes at most 100). */
     private static final int MAX_TASKS = 100;
 
+    
+
     /**
      * Greets the user, then stores and lists tasks until {@code bye} is entered.
      *
@@ -38,6 +43,7 @@ public class HermesMini {
         printGreeting();
 
         List<Task> tasks = new ArrayList<>();
+        loadTasks(tasks);
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -149,6 +155,7 @@ public class HermesMini {
                 task.markAsNotDone();
                 printUnmarkedTask(task);
             }
+            saveTasks(tasks);
         } catch (NumberFormatException exception) {
             printError("Please provide a valid task number.");
         }
@@ -163,6 +170,7 @@ public class HermesMini {
                 return;
             }
             Task task = tasks.remove(number - 1);
+            saveTasks(tasks);
             System.out.println(DIVIDER);
             System.out.println(INDENT + "Noted. I've removed this task:");
             System.out.println(INDENT + "  [" + task.getTypeIcon() + "]["
@@ -189,6 +197,7 @@ public class HermesMini {
             return;
         }
         tasks.add(task);
+        saveTasks(tasks);
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Got it. I've added this task:");
         System.out.println(INDENT + "  [" + task.getTypeIcon() + "][ ] "
@@ -197,5 +206,52 @@ public class HermesMini {
         System.out.println(INDENT + "Now you have " + tasks.size()
                 + " tasks in the list.");
         System.out.println(DIVIDER);
+    }
+
+    /** Loads valid saved tasks, leaving the list empty when the file is absent. */
+    private static void loadTasks(List<Task> tasks) {
+        Path file = Task.getDataFile();
+        if (!Files.exists(file)) {
+            return;
+        }
+        try {
+            for (String line : Files.readAllLines(file)) {
+                String[] parts = line.split(" \\| ", -1);
+                Task task = null;
+                if (parts.length == 3 && parts[0].equals("T")) {
+                    task = new Todo(parts[2]);
+                } else if (parts.length == 4 && parts[0].equals("D")) {
+                    task = new Deadline(parts[2], parts[3]);
+                } else if (parts.length == 4 && parts[0].equals("E")) {
+                    String[] times = parts[3].split(" -> ", 2);
+                    if (times.length == 2) {
+                        task = new Event(parts[2], times[0], times[1]);
+                    }
+                }
+                if (task != null && (parts[1].equals("0") || parts[1].equals("1"))) {
+                    if (parts[1].equals("1")) {
+                        task.markAsDone();
+                    }
+                    tasks.add(task);
+                }
+            }
+        } catch (IOException exception) {
+            printError("I couldn't load the saved tasks.");
+        }
+    }
+
+    /** Saves all tasks, creating the data directory when necessary. */
+    private static void saveTasks(List<Task> tasks) {
+        try {
+            Path file = Task.getDataFile();
+            Files.createDirectories(file.getParent());
+            List<String> lines = new ArrayList<>();
+            for (Task task : tasks) {
+                lines.add(task.toSaveString());
+            }
+            Files.write(file, lines);
+        } catch (IOException exception) {
+            printError("I couldn't save the tasks.");
+        }
     }
 }

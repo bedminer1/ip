@@ -23,4 +23,10 @@ public class Event extends Task {
     public String getDisplayText() {
         return getDescription() + " (from: " + from + " to: " + to + ")";
     }
+
+    @Override
+    public String toSaveString() {
+        return "E | " + getSaveStatus() + " | " + getDescription()
+                + " | " + from + " -> " + to;
+    }
 }

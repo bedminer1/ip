@@ -19,4 +19,9 @@ public class Deadline extends Task {
     public String getDisplayText() {
         return getDescription() + " (by: " + by + ")";
     }
+
+    @Override
+    public String toSaveString() {
+        return "D | " + getSaveStatus() + " | " + getDescription() + " | " + by;
+    }
 }
