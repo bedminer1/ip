@@ -1,12 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 /**
  * HermesMini is a command-line chatbot that keeps track of the user's tasks.
@@ -37,8 +37,6 @@ public class HermesMini {
 
     private static final DateTimeFormatter DATE_TIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-    
 
     /**
      * Greets the user, then stores and lists tasks until {@code bye} is entered.
