@@ -66,6 +66,8 @@ public class HermesMini {
                 markTask(tasks, command.substring(7), false);
             } else if (command.startsWith("delete ")) {
                 deleteTask(tasks, command.substring(7));
+            } else if (command.startsWith("find ")) {
+                findTasks(tasks, command.substring(5).trim());
             } else if (command.equals("todo") || command.startsWith("todo ")) {
                 String description = command.length() == 4 ? ""
                         : command.substring(5).trim();
@@ -132,6 +134,24 @@ public class HermesMini {
             Task task = tasks.get(i);
             System.out.println(INDENT + (i + 1) + ".[" + task.getTypeIcon() + "]["
                     + task.getStatusIcon() + "] " + task.getDisplayText());
+        }
+        System.out.println(DIVIDER);
+    }
+
+    /** Prints tasks whose descriptions contain the supplied keyword. */
+    private static void findTasks(List<Task> tasks, String keyword) {
+        if (keyword.isEmpty()) {
+            printError("Please provide a keyword to search for.");
+            return;
+        }
+        System.out.println(DIVIDER);
+        System.out.println(INDENT + "Here are the matching tasks:");
+        for (int i = 0; i < tasks.size(); i++) {
+            Task task = tasks.get(i);
+            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
+                System.out.println(INDENT + (i + 1) + ".[" + task.getTypeIcon() + "]["
+                        + task.getStatusIcon() + "] " + task.getDisplayText());
+            }
         }
         System.out.println(DIVIDER);
     }
