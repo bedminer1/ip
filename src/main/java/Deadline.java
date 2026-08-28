@@ -17,16 +17,19 @@ public class Deadline extends Task {
     }
 
     @Override
+    /** Returns the deadline task type icon. */
     public String getTypeIcon() {
         return "D";
     }
 
     @Override
+    /** Returns the description and formatted deadline. */
     public String getDisplayText() {
         return getDescription() + " (by: " + by.format(DISPLAY_FORMAT) + ")";
     }
 
     @Override
+    /** Serializes this deadline for persistent storage. */
     public String toSaveString() {
         return "D | " + getSaveStatus() + " | " + getDescription() + " | " + by;
     }
