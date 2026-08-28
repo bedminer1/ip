@@ -20,21 +20,21 @@ public class Event extends Task {
         this.to = to;
     }
 
-    @Override
     /** Returns the event task type icon. */
+    @Override
     public String getTypeIcon() {
         return "E";
     }
 
-    @Override
     /** Returns the description and formatted event interval. */
+    @Override
     public String getDisplayText() {
         return getDescription() + " (from: " + from.format(DISPLAY_FORMAT)
                 + " to: " + to.format(DISPLAY_FORMAT) + ")";
     }
 
-    @Override
     /** Serializes this event for persistent storage. */
+    @Override
     public String toSaveString() {
         return "E | " + getSaveStatus() + " | " + getDescription()
                 + " | " + from + " -> " + to;
