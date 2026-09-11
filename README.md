@@ -36,3 +36,17 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
    ```
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+
+## Running Hermes Mini
+
+Run the JavaFX interface from the project root:
+
+```shell
+./gradlew run
+```
+
+On Windows, use `gradlew.bat run` instead. The Gradle build provisions the
+required JDK and JavaFX dependencies when they are not already installed.
+
+To run the Rust implementation, change to the `rust` directory and use
+`cargo run`. Pass `-- --cli` to retain its command-line interface.
