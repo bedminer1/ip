@@ -1,3 +1,5 @@
+package duke;
+
 /** The supported categories of tasks. */
 public enum TaskType {
     TODO("T"),
@@ -15,4 +17,3 @@ public enum TaskType {
         return icon;
     }
 }
-package duke;
