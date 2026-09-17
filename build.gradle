@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'com.gradleup.shadow' version '9.5.1'
 }
 
 repositories {
@@ -35,4 +36,8 @@ test {
 
 tasks.named('run') {
     standardInput = System.in
+}
+
+shadowJar {
+    archiveFileName = 'hermes-mini.jar'
 }
