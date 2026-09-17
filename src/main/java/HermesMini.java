@@ -1,10 +1,7 @@
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,6 +23,9 @@ public class HermesMini {
     /** User interface responsible for displaying all chatbot output. */
     private static final Ui UI = new Ui();
 
+    /** Storage responsible for persisting the task list. */
+    private static final Storage STORAGE = new Storage(Task.getDataFile());
+
     /**
      * Greets the user, then stores and lists tasks until {@code bye} is entered.
      *
@@ -34,8 +34,13 @@ public class HermesMini {
     public static void main(String[] args) {
         UI.showGreeting();
 
-        List<Task> tasks = new ArrayList<>();
-        loadTasks(tasks);
+        List<Task> tasks;
+        try {
+            tasks = STORAGE.load();
+        } catch (IOException | DateTimeParseException exception) {
+            UI.showError("I couldn't load the saved tasks.");
+            tasks = new java.util.ArrayList<>();
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -164,49 +169,10 @@ public class HermesMini {
         UI.showAddedTask(task, tasks.size());
     }
 
-    /** Loads valid saved tasks, leaving the list empty when the file is absent. */
-    private static void loadTasks(List<Task> tasks) {
-        Path file = Task.getDataFile();
-        if (!Files.exists(file)) {
-            return;
-        }
-        try {
-            for (String line : Files.readAllLines(file)) {
-                String[] parts = line.split(" \\| ", -1);
-                Task task = null;
-                if (parts.length == 3 && parts[0].equals("T")) {
-                    task = new Todo(parts[2]);
-                } else if (parts.length == 4 && parts[0].equals("D")) {
-                    task = new Deadline(parts[2], LocalDateTime.parse(parts[3]));
-                } else if (parts.length == 4 && parts[0].equals("E")) {
-                    String[] times = parts[3].split(" -> ", 2);
-                    if (times.length == 2) {
-                        task = new Event(parts[2], LocalDateTime.parse(times[0]),
-                                LocalDateTime.parse(times[1]));
-                    }
-                }
-                if (task != null && (parts[1].equals("0") || parts[1].equals("1"))) {
-                    if (parts[1].equals("1")) {
-                        task.markAsDone();
-                    }
-                    tasks.add(task);
-                }
-            }
-        } catch (IOException | DateTimeParseException exception) {
-            UI.showError("I couldn't load the saved tasks.");
-        }
-    }
-
     /** Saves all tasks, creating the data directory when necessary. */
     private static void saveTasks(List<Task> tasks) {
         try {
-            Path file = Task.getDataFile();
-            Files.createDirectories(file.getParent());
-            List<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(task.toSaveString());
-            }
-            Files.write(file, lines);
+            STORAGE.save(tasks);
         } catch (IOException exception) {
             UI.showError("I couldn't save the tasks.");
         }
