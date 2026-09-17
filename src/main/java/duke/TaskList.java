@@ -51,6 +51,12 @@ public class TaskList {
         return number >= 1 && number <= tasks.size();
     }
 
+    /** Returns whether an equivalent task is already stored. */
+    public boolean containsEquivalent(Task candidate) {
+        return tasks.stream().anyMatch(task -> task.getClass().equals(candidate.getClass())
+                && task.getDisplayText().equalsIgnoreCase(candidate.getDisplayText()));
+    }
+
     /** Returns the number of tasks. */
     public int size() {
         return tasks.size();

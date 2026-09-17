@@ -19,4 +19,9 @@ public class Parser {
     public String argument(String command, int prefixLength) {
         return command.substring(prefixLength).trim();
     }
+
+    /** Normalizes leading, trailing, and repeated whitespace in a command. */
+    public String normalizeCommand(String command) {
+        return command.trim().replaceAll("\\s+", " ");
+    }
 }

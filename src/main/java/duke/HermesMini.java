@@ -40,7 +40,11 @@ public class HermesMini {
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+            String command = PARSER.normalizeCommand(scanner.nextLine());
+            if (command.isEmpty()) {
+                UI.showError("Please enter a command.");
+                continue;
+            }
             if (command.equals("bye")) {
                 UI.showMessage("Farewell! Hermes will be ready for your next message.");
                 break;
@@ -63,6 +67,8 @@ public class HermesMini {
                 } else {
                     addTask(taskList, new Todo(description));
                 }
+            } else if (command.equals("deadline")) {
+                UI.showError("A deadline needs a description and a /by date or time.");
             } else if (command.startsWith("deadline ")) {
                 String[] parts = command.substring(9).split(" /by ", 2);
                 if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
@@ -73,6 +79,8 @@ public class HermesMini {
                         addTask(taskList, new Deadline(parts[0].trim(), date));
                     }
                 }
+            } else if (command.equals("event")) {
+                UI.showError("An event needs a description, /from time, and /to time.");
             } else if (command.startsWith("event ")) {
                 String[] parts = command.substring(6).split(" /from ", 2);
                 if (parts.length < 2) {
@@ -85,11 +93,15 @@ public class HermesMini {
                     } else {
                         LocalDateTime from = parseDate(end[0].trim());
                         LocalDateTime to = parseDate(end[1].trim());
-                        if (from != null && to != null) {
+                        if (from != null && to != null && !from.isBefore(to)) {
+                            UI.showError("An event must start before it ends.");
+                        } else if (from != null && to != null) {
                             addTask(taskList, new Event(parts[0].trim(), from, to));
                         }
                     }
                 }
+            } else if (command.equals("remind")) {
+                UI.showError("A reminder needs a description and an /at date or time.");
             } else if (command.startsWith("remind ")) {
                 String[] parts = command.substring(7).split(" /at ", 2);
                 if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
@@ -101,7 +113,8 @@ public class HermesMini {
                     }
                 }
             } else {
-                UI.showError("I don't recognise that command. Try todo, deadline, event, list, mark, or unmark.");
+                UI.showError("I don't recognise that command. Try todo, deadline, event, remind, list, find, mark,"
+                        + " unmark, or delete.");
             }
         }
         scanner.close();
@@ -166,6 +179,10 @@ public class HermesMini {
 
     /** Stores and reports a newly created task. */
     private static void addTask(TaskList taskList, Task task) {
+        if (taskList.containsEquivalent(task)) {
+            UI.showError("That task is already in your list.");
+            return;
+        }
         if (!taskList.add(task)) {
             UI.showError("Your task list is full.");
             return;
