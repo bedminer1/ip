@@ -39,6 +39,7 @@ public class Storage {
 
     /** Saves all tasks, creating the parent directory when necessary. */
     public void save(List<Task> tasks) throws IOException {
+        assert tasks != null : "Tasks to save must not be null";
         Files.createDirectories(file.getParent());
         List<String> lines = new ArrayList<>();
         for (Task task : tasks) {

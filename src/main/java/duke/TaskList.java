@@ -34,11 +34,13 @@ public class TaskList {
 
     /** Removes and returns the task at a one-based position. */
     public Task remove(int number) {
+        assert contains(number) : "Task number must be valid before removal";
         return tasks.remove(number - 1);
     }
 
     /** Returns the task at a one-based position. */
     public Task get(int number) {
+        assert contains(number) : "Task number must be valid before lookup";
         return tasks.get(number - 1);
     }
 
