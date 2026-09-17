@@ -21,8 +21,8 @@ public class Ui {
     public void showGreeting() {
         System.out.println(DIVIDER);
         System.out.println(BANNER);
-        System.out.println(INDENT + "Hello! I'm hermes-mini");
-        System.out.println(INDENT + "What can I do for you?");
+        System.out.println(INDENT + "Greetings! I'm Hermes, your task messenger.");
+        System.out.println(INDENT + "What shall I carry for you today?");
         System.out.println(DIVIDER);
     }
 
@@ -57,19 +57,19 @@ public class Ui {
 
     /** Prints the confirmation shown after marking a task as done. */
     public void showMarkedTask(Task task) {
-        showMessage("Nice! I've marked this task as done:\n" + INDENT
+        showMessage("Dispatch complete! This task is now done:\n" + INDENT
                 + "  [X] " + task.getDescription());
     }
 
     /** Prints the confirmation shown after marking a task as not done. */
     public void showUnmarkedTask(Task task) {
-        showMessage("OK, I've marked this task as not done yet:\n" + INDENT
+        showMessage("Message received. This task is active again:\n" + INDENT
                 + "  [ ] " + task.getDescription());
     }
 
     /** Prints the confirmation shown after deleting a task. */
     public void showDeletedTask(Task task, int remainingTaskCount) {
-        showMessage("Noted. I've removed this task:\n" + INDENT + "  ["
+        showMessage("Message withdrawn. I've removed this task:\n" + INDENT + "  ["
                 + task.getTypeIcon() + "][" + task.getStatusIcon() + "] "
                 + task.getDisplayText() + "\n" + INDENT + "Now you have "
                 + remainingTaskCount + " tasks in the list.");
@@ -77,14 +77,14 @@ public class Ui {
 
     /** Prints the confirmation shown after adding a task. */
     public void showAddedTask(Task task, int taskCount) {
-        showMessage("Got it. I've added this task:\n" + INDENT + "  ["
+        showMessage("Message delivered! I've added this task:\n" + INDENT + "  ["
                 + task.getTypeIcon() + "][ ] " + task.getDisplayText() + "\n\n"
                 + INDENT + "Now you have " + taskCount + " tasks in the list.");
     }
 
     /** Prints a framed error without terminating the chatbot. */
     public void showError(String message) {
-        showMessage("OOPS!!! " + message);
+        showMessage("DELIVERY FAILED: " + message);
     }
 
     /** Prints a numbered task within an existing message frame. */

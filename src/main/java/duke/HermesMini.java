@@ -42,7 +42,7 @@ public class HermesMini {
         while (scanner.hasNextLine()) {
             String command = scanner.nextLine();
             if (command.equals("bye")) {
-                UI.showMessage("Bye. Hope to see you again soon!");
+                UI.showMessage("Farewell! Hermes will be ready for your next message.");
                 break;
             }
             if (command.equals("list")) {

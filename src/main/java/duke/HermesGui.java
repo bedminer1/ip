@@ -134,7 +134,7 @@ public class HermesGui {
             line.append(character);
             if (character == '\n') {
                 String message = line.toString();
-                Color color = message.contains("OOPS!!!") ? ERROR_COLOR : HERMES_COLOR;
+                Color color = message.contains("DELIVERY FAILED") ? ERROR_COLOR : HERMES_COLOR;
                 appendMessage(message, color, false);
                 line.setLength(0);
             }
