@@ -35,3 +35,8 @@ Ensure that Java 25 or newer is used when running the application or build tasks
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
+
+## Project-specific skills
+
+Apply `.codex/skills/seedu-java-coding-standard/SKILL.md` to all Java code in this project.
+Apply `.codex/skills/seedu-git-standard/SKILL.md` to all commit messages in this project.

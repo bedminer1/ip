@@ -1,11 +1,15 @@
+package duke;
+
 /** The supported categories of tasks. */
 public enum TaskType {
     TODO("T"),
     DEADLINE("D"),
-    EVENT("E");
+    EVENT("E"),
+    REMINDER("R");
 
     private final String icon;
 
+    /** Creates a task type with its serialized icon. */
     TaskType(String icon) {
         this.icon = icon;
     }
