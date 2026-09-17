@@ -6,6 +6,7 @@ import java.time.format.DateTimeParseException;
 
 /** Interprets command arguments and date/time values entered by the user. */
 public class Parser {
+    /** Format accepted for deadline and event date/time arguments. */
     private static final DateTimeFormatter DATE_TIME_FORMAT =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 

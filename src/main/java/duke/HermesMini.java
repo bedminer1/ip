@@ -2,7 +2,6 @@ package duke;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +15,6 @@ import java.util.Scanner;
  */
 public class HermesMini {
 
-    /** Maximum number of tasks the list can hold (spec assumes at most 100). */
     /** User interface responsible for displaying all chatbot output. */
     private static final Ui UI = new Ui();
 

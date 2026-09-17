@@ -5,6 +5,7 @@ import java.util.List;
 
 /** Owns the in-memory collection of tasks and its domain operations. */
 public class TaskList {
+    /** Mutable task collection owned by this list. */
     private final List<Task> tasks;
 
     /** Creates a task list containing the supplied tasks. */

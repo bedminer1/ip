@@ -8,6 +8,7 @@ public enum TaskType {
 
     private final String icon;
 
+    /** Creates a task type with its serialized icon. */
     TaskType(String icon) {
         this.icon = icon;
     }
