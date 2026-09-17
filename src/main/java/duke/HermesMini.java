@@ -90,6 +90,16 @@ public class HermesMini {
                         }
                     }
                 }
+            } else if (command.startsWith("remind ")) {
+                String[] parts = command.substring(7).split(" /at ", 2);
+                if (parts.length < 2 || parts[0].trim().isEmpty() || parts[1].trim().isEmpty()) {
+                    UI.showError("A reminder needs a description and an /at date or time.");
+                } else {
+                    LocalDateTime remindAt = parseDate(parts[1].trim());
+                    if (remindAt != null) {
+                        addTask(taskList, new Reminder(parts[0].trim(), remindAt));
+                    }
+                }
             } else {
                 UI.showError("I don't recognise that command. Try todo, deadline, event, list, mark, or unmark.");
             }

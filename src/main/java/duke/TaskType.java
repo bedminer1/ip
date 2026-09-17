@@ -4,7 +4,8 @@ package duke;
 public enum TaskType {
     TODO("T"),
     DEADLINE("D"),
-    EVENT("E");
+    EVENT("E"),
+    REMINDER("R");
 
     private final String icon;
 

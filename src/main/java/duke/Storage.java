@@ -63,6 +63,9 @@ public class Storage {
                         LocalDateTime.parse(times[1]));
             }
         }
+        if (parts.length == 4 && parts[0].equals("R")) {
+            return new Reminder(parts[2], LocalDateTime.parse(parts[3]));
+        }
         return null;
     }
 }
