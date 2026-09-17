@@ -40,3 +40,4 @@ public class Event extends Task {
                 + " | " + from + " -> " + to;
     }
 }
+package duke;

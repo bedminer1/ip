@@ -6,3 +6,4 @@ public class Todo extends Task {
         super(description, TaskType.TODO);
     }
 }
+package duke;
