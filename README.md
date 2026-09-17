@@ -1,5 +1,7 @@
 # hermes-mini
 
+[![Gradle Build](https://github.com/bedminer1/ip/actions/workflows/gradle.yml/badge.svg)](https://github.com/bedminer1/ip/actions/workflows/gradle.yml)
+
 This is a greenfield Java project template used as the starting point for the hermes-mini task-management chatbot. Given below are instructions on how to use it.
 
 ## Setting up in Intellij
