@@ -15,7 +15,7 @@ java {
 }
 
 application {
-    mainClass = 'duke.HermesMini'
+    mainClass = 'duke.HermesGui'
 }
 
 dependencies {
