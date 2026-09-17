@@ -1,6 +1,8 @@
 package duke;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.IntStream;
 
 /** Handles all text displayed to the user. */
 public class Ui {
@@ -45,12 +47,11 @@ public class Ui {
     public void showMatchingTasks(List<Task> tasks, String keyword) {
         System.out.println(DIVIDER);
         System.out.println(INDENT + "Here are the matching tasks:");
-        for (int i = 0; i < tasks.size(); i++) {
-            Task task = tasks.get(i);
-            if (task.getDescription().toLowerCase().contains(keyword.toLowerCase())) {
-                showNumberedTask(i + 1, task);
-            }
-        }
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        IntStream.range(0, tasks.size())
+                .filter(index -> tasks.get(index).getDescription()
+                        .toLowerCase(Locale.ROOT).contains(normalizedKeyword))
+                .forEach(index -> showNumberedTask(index + 1, tasks.get(index)));
         System.out.println(DIVIDER);
     }
 

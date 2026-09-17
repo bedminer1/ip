@@ -5,6 +5,8 @@ import java.util.List;
 
 /** Owns the in-memory collection of tasks and its domain operations. */
 public class TaskList {
+    private static final int MAX_TASKS = 100;
+
     /** Mutable task collection owned by this list. */
     private final List<Task> tasks;
 
@@ -25,7 +27,7 @@ public class TaskList {
 
     /** Adds a task when capacity permits. */
     public boolean add(Task task) {
-        if (tasks.size() >= 100) {
+        if (tasks.size() >= MAX_TASKS) {
             return false;
         }
         tasks.add(task);

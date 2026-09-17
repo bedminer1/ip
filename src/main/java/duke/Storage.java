@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /** Loads tasks from and saves tasks to the chatbot's data file. */
 public class Storage {
@@ -41,10 +42,9 @@ public class Storage {
     public void save(List<Task> tasks) throws IOException {
         assert tasks != null : "Tasks to save must not be null";
         Files.createDirectories(file.getParent());
-        List<String> lines = new ArrayList<>();
-        for (Task task : tasks) {
-            lines.add(task.toSaveString());
-        }
+        List<String> lines = tasks.stream()
+                .map(Task::toSaveString)
+                .collect(Collectors.toList());
         Files.write(file, lines);
     }
 
