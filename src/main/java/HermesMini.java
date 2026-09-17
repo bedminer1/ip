@@ -15,16 +15,12 @@ import java.util.Scanner;
 public class HermesMini {
 
     /** Maximum number of tasks the list can hold (spec assumes at most 100). */
-    private static final int MAX_TASKS = 100;
-
-    private static final DateTimeFormatter DATE_TIME_FORMAT =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     /** User interface responsible for displaying all chatbot output. */
     private static final Ui UI = new Ui();
 
     /** Storage responsible for persisting the task list. */
     private static final Storage STORAGE = new Storage(Task.getDataFile());
+    private static final Parser PARSER = new Parser();
 
     /**
      * Greets the user, then stores and lists tasks until {@code bye} is entered.
@@ -34,12 +30,12 @@ public class HermesMini {
     public static void main(String[] args) {
         UI.showGreeting();
 
-        List<Task> tasks;
+        TaskList taskList;
         try {
-            tasks = STORAGE.load();
+            taskList = new TaskList(STORAGE.load());
         } catch (IOException | DateTimeParseException exception) {
             UI.showError("I couldn't load the saved tasks.");
-            tasks = new java.util.ArrayList<>();
+            taskList = new TaskList();
         }
 
         Scanner scanner = new Scanner(System.in);
@@ -50,22 +46,22 @@ public class HermesMini {
                 break;
             }
             if (command.equals("list")) {
-                UI.showTaskList(tasks);
+                UI.showTaskList(taskList.getTasks());
             } else if (command.startsWith("mark ")) {
-                markTask(tasks, command.substring(5), true);
+                markTask(taskList, command.substring(5), true);
             } else if (command.startsWith("unmark ")) {
-                markTask(tasks, command.substring(7), false);
+                markTask(taskList, command.substring(7), false);
             } else if (command.startsWith("delete ")) {
-                deleteTask(tasks, command.substring(7));
+                deleteTask(taskList, command.substring(7));
             } else if (command.startsWith("find ")) {
-                findTasks(tasks, command.substring(5).trim());
+                findTasks(taskList, command.substring(5).trim());
             } else if (command.equals("todo") || command.startsWith("todo ")) {
                 String description = command.length() == 4 ? ""
                         : command.substring(5).trim();
                 if (description.isEmpty()) {
                     UI.showError("A todo needs a description.");
                 } else {
-                    addTask(tasks, new Todo(description));
+                    addTask(taskList, new Todo(description));
                 }
             } else if (command.startsWith("deadline ")) {
                 String[] parts = command.substring(9).split(" /by ", 2);
@@ -74,7 +70,7 @@ public class HermesMini {
                 } else {
                     LocalDateTime date = parseDate(parts[1].trim());
                     if (date != null) {
-                        addTask(tasks, new Deadline(parts[0].trim(), date));
+                        addTask(taskList, new Deadline(parts[0].trim(), date));
                     }
                 }
             } else if (command.startsWith("event ")) {
@@ -90,7 +86,7 @@ public class HermesMini {
                         LocalDateTime from = parseDate(end[0].trim());
                         LocalDateTime to = parseDate(end[1].trim());
                         if (from != null && to != null) {
-                            addTask(tasks, new Event(parts[0].trim(), from, to));
+                            addTask(taskList, new Event(parts[0].trim(), from, to));
                         }
                     }
                 }
@@ -102,23 +98,23 @@ public class HermesMini {
     }
 
     /** Prints tasks whose descriptions contain the supplied keyword. */
-    private static void findTasks(List<Task> tasks, String keyword) {
+    private static void findTasks(TaskList taskList, String keyword) {
         if (keyword.isEmpty()) {
             UI.showError("Please provide a keyword to search for.");
             return;
         }
-        UI.showMatchingTasks(tasks, keyword);
+        UI.showMatchingTasks(taskList.getTasks(), keyword);
     }
 
     /** Marks or unmarks a task after validating the user-provided number. */
-    private static void markTask(List<Task> tasks, String numberText, boolean done) {
+    private static void markTask(TaskList taskList, String numberText, boolean done) {
         try {
             int number = Integer.parseInt(numberText.trim());
-            if (number < 1 || number > tasks.size()) {
+            if (!taskList.contains(number)) {
                 UI.showError("That task number is not in your list.");
                 return;
             }
-            Task task = tasks.get(number - 1);
+            Task task = taskList.get(number);
             if (done) {
                 task.markAsDone();
                 UI.showMarkedTask(task);
@@ -126,23 +122,23 @@ public class HermesMini {
                 task.markAsNotDone();
                 UI.showUnmarkedTask(task);
             }
-            saveTasks(tasks);
+            saveTasks(taskList);
         } catch (NumberFormatException exception) {
             UI.showError("Please provide a valid task number.");
         }
     }
 
     /** Deletes a task after validating the user-provided number. */
-    private static void deleteTask(List<Task> tasks, String numberText) {
+    private static void deleteTask(TaskList taskList, String numberText) {
         try {
             int number = Integer.parseInt(numberText.trim());
-            if (number < 1 || number > tasks.size()) {
+            if (!taskList.contains(number)) {
                 UI.showError("That task number is not in your list.");
                 return;
             }
-            Task task = tasks.remove(number - 1);
-            saveTasks(tasks);
-            UI.showDeletedTask(task, tasks.size());
+            Task task = taskList.remove(number);
+            saveTasks(taskList);
+            UI.showDeletedTask(task, taskList.size());
         } catch (NumberFormatException exception) {
             UI.showError("Please provide a valid task number.");
         }
@@ -151,7 +147,7 @@ public class HermesMini {
     /** Parses the supported date/time format and reports invalid values. */
     private static LocalDateTime parseDate(String text) {
         try {
-            return LocalDateTime.parse(text, DATE_TIME_FORMAT);
+            return PARSER.parseDate(text);
         } catch (DateTimeParseException exception) {
             UI.showError("Use dates and times like 2019-12-02 18:00.");
             return null;
@@ -159,20 +155,19 @@ public class HermesMini {
     }
 
     /** Stores and reports a newly created task. */
-    private static void addTask(List<Task> tasks, Task task) {
-        if (tasks.size() >= MAX_TASKS) {
+    private static void addTask(TaskList taskList, Task task) {
+        if (!taskList.add(task)) {
             UI.showError("Your task list is full.");
             return;
         }
-        tasks.add(task);
-        saveTasks(tasks);
-        UI.showAddedTask(task, tasks.size());
+        saveTasks(taskList);
+        UI.showAddedTask(task, taskList.size());
     }
 
     /** Saves all tasks, creating the data directory when necessary. */
-    private static void saveTasks(List<Task> tasks) {
+    private static void saveTasks(TaskList taskList) {
         try {
-            STORAGE.save(tasks);
+            STORAGE.save(taskList.getTasks());
         } catch (IOException exception) {
             UI.showError("I couldn't save the tasks.");
         }

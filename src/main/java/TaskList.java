@@ -1,0 +1,51 @@
+import java.util.ArrayList;
+import java.util.List;
+
+/** Owns the in-memory collection of tasks and its domain operations. */
+public class TaskList {
+    private final List<Task> tasks;
+
+    /** Creates a task list containing the supplied tasks. */
+    public TaskList(List<Task> tasks) {
+        this.tasks = new ArrayList<>(tasks);
+    }
+
+    /** Creates an empty task list. */
+    public TaskList() {
+        this(new ArrayList<>());
+    }
+
+    /** Returns the tasks for display or persistence. */
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    /** Adds a task when capacity permits. */
+    public boolean add(Task task) {
+        if (tasks.size() >= 100) {
+            return false;
+        }
+        tasks.add(task);
+        return true;
+    }
+
+    /** Removes and returns the task at a one-based position. */
+    public Task remove(int number) {
+        return tasks.remove(number - 1);
+    }
+
+    /** Returns the task at a one-based position. */
+    public Task get(int number) {
+        return tasks.get(number - 1);
+    }
+
+    /** Returns whether a one-based task number is valid. */
+    public boolean contains(int number) {
+        return number >= 1 && number <= tasks.size();
+    }
+
+    /** Returns the number of tasks. */
+    public int size() {
+        return tasks.size();
+    }
+}
