@@ -17,6 +17,22 @@ application {
     mainClass = 'duke.HermesMini'
 }
 
+dependencies {
+    def junitVersion = '5.14.4'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        showExceptions = true
+        exceptionFormat = 'full'
+    }
+}
+
 tasks.named('run') {
     standardInput = System.in
 }
