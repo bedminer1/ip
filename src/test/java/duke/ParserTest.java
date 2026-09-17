@@ -28,4 +28,10 @@ public class ParserTest {
     public void argument_trimsTextAfterCommandPrefix() {
         assertEquals("read book", parser.argument("todo read book", 5));
     }
+
+    @Test
+    public void normalizeCommand_irregularWhitespace_returnsSingleSpacedCommand() {
+        assertEquals("deadline submit report /by 2026-09-18 18:00",
+                parser.normalizeCommand("  deadline   submit report   /by   2026-09-18 18:00  "));
+    }
 }

@@ -40,4 +40,13 @@ public class TaskListTest {
         assertFalse(tasks.add(new Todo("overflow")));
         assertEquals(100, tasks.size());
     }
+
+    @Test
+    public void containsEquivalent_sameTaskIgnoringCase_returnsTrue() {
+        TaskList tasks = new TaskList();
+        tasks.add(new Todo("Read Book"));
+
+        assertTrue(tasks.containsEquivalent(new Todo("read book")));
+        assertFalse(tasks.containsEquivalent(new Todo("write report")));
+    }
 }
