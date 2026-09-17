@@ -38,6 +38,10 @@ tasks.named('run') {
     standardInput = System.in
 }
 
+tasks.named('jar') {
+    archiveClassifier = 'plain'
+}
+
 shadowJar {
     archiveFileName = 'hermes-mini.jar'
 }
